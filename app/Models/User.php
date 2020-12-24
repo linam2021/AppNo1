@@ -20,6 +20,16 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'f_name',
+        's_name',
+        't_name',
+        'l_name',
+        'region',
+        'city',
+        'town',
+        'phone',
+        'gender',
+        'national_id',
     ];
 
     /**
@@ -38,6 +48,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+
     ];
+
+    public function Requests()
+    {
+        return $this->hasMany('App\Models\Requestss', 'user_id', 'id');
+    }
 }
