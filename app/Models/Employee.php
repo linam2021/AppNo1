@@ -2,37 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+
+class Employee extends Authenticatable
 {
-    use HasFactory, Notifiable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+    use HasFactory;
     protected $fillable = [
-        'username',
         'email',
         'password',
         'f_name',
-        's_name',
-        't_name',
         'l_name',
         'region',
         'city',
         'town',
-        'phone',
-        'gender',
-        'national_id',
+        'section_id'
     ];
 
-    /**
+     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
@@ -51,8 +39,8 @@ class User extends Authenticatable
 
     ];
 
-    public function Requests()
+    public function section()
     {
-        return $this->hasMany('App\Models\Requestss', 'user_id', 'id');
+        return $this->belongsTo('App\Models\Section', 'section_id', 'id');
     }
 }
