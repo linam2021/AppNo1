@@ -14,6 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+//Lina, I changed the name of the "api" guard to "user-api"
+Route::middleware('auth:user-api')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+
+///// admin routes /////
+Route::post('employee/login', 'Api\Employee\AuthController@login');
+
+Route::group(['middleware' => 'auth:employee-api', 'prefix' => 'admin', 'namespace'=> 'Api\Employee'],
+function ($router) {
+// to do later
+
 });
