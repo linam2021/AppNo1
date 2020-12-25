@@ -13,11 +13,13 @@ class Section extends Model
         'name'
     ];
 
+    public $timestamps = false;
+    
     public function Requests()
     {
         return $this->hasMany('App\Models\Requests', 'section_id', 'id');
     }
-    
+
     public function Employees()
     {
         return $this->hasMany('App\Models\Employees', 'section_id', 'id');
