@@ -14,7 +14,7 @@ class Section extends Model
     ];
 
     public $timestamps = false;
-    
+
     public function Requests()
     {
         return $this->hasMany('App\Models\Requests', 'section_id', 'id');

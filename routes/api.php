@@ -14,16 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Lina, I changed the name of the "api" guard to "user-api"
-Route::middleware('auth:user-api')->get('/user', function (Request $request) {
-    return $request->user();
+///// User routes /////
+Route::group(['middleware' => 'auth:user-api', 'prefix' => 'user', 'as' => 'user.','namespace'=> 'Api\User'],
+function ($router) {
+    Route::resource('requests', 'RequestController')->only('store','index','show','rate');
 });
 
 
-///// admin routes /////
+///// Employee routes /////
 Route::post('employee/login', 'Api\Employee\AuthController@login');
 
-Route::group(['middleware' => 'auth:employee-api', 'prefix' => 'admin', 'namespace'=> 'Api\Employee'],
+Route::group(['middleware' => 'auth:employee-api', 'prefix' => 'employee', 'namespace'=> 'Api\Employee'],
 function ($router) {
 // to do later
 
