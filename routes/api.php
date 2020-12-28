@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,7 +15,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
 //Lina, I changed the name of the "api" guard to "user-api"
 Route::middleware('auth:user-api')->get('/user', function (Request $request) {
     return $request->user();
@@ -28,3 +29,13 @@ function ($router) {
 // to do later
 
 });
+
+
+Route::post('user/register', 'Api\user\AuthController@register');
+Route::post('user/login', 'Api\user\AuthController@login');
+
+
+
+
+
+
