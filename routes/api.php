@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -30,3 +32,13 @@ function ($router) {
 // to do later
 
 });
+
+
+Route::post('user/register', 'Api\user\AuthController@register');
+Route::post('user/login', 'Api\user\AuthController@login');
+
+
+
+
+
+
