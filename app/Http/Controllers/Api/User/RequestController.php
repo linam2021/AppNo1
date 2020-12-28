@@ -72,10 +72,10 @@ class RequestController extends Controller
                 'details' => $request->suggestions,
                 'request_id' => $userRequest->id
             ]);
-            //added for response
+            //added for response only
             $userRequest->suggestions = $request->suggestions;
         }
-        //added for response
+        //added for response only
         $userRequest->status = 'Open';
 
 

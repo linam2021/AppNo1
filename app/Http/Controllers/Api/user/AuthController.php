@@ -34,8 +34,10 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'User registered Successfully!'
         ];
-        return response()->json($response,401);
+        return response()->json($response,201);
     }
+
+
     public function login(Request $request)
     {
         $credentials = $request->all();
@@ -58,6 +60,6 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'access_token' => $token,
         ];
-        return response()->json($response,401);
+        return response()->json($response,200);
     }
 }

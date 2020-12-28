@@ -17,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 ///// User routes /////
+
+Route::post('user/register', 'Api\user\AuthController@register');
+Route::post('user/login', 'Api\user\AuthController@login');
+
 Route::group(['middleware' => 'auth:user-api', 'prefix' => 'user', 'as' => 'user.','namespace'=> 'Api\User'],
 function ($router) {
     Route::post('requests/{id}/rating', 'RequestController@rate')->name('requests.rate');
@@ -34,8 +38,6 @@ function ($router) {
 });
 
 
-Route::post('user/register', 'Api\user\AuthController@register');
-Route::post('user/login', 'Api\user\AuthController@login');
 
 
 
