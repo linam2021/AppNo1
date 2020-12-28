@@ -37,11 +37,6 @@ class RequestController extends Controller
      */
     public function store(HttpRequest $request)
     {
-        // 'type',
-        // 'subject',
-        // 'details',
-        // 'user_id',
-        // 'section_id'
         $input = $request->all();
         $validator = Validator::make( $input ,[
             'type' => 'required|in:complaint,suggestion,thanks',
@@ -57,8 +52,7 @@ class RequestController extends Controller
         $sectionId = Section::find(1)->id; //default section
         $userId = Auth::id();
 
-
-
+        //stored in database
         $userRequest = Request::create([
             'type' => $request->type,
             'subject' => $request->subject,
@@ -72,13 +66,18 @@ class RequestController extends Controller
             'name' => 'Open',
             'request_id' => $userRequest->id
         ]);
-        if($request->suggestions) //not null
+        if($request->suggestions) //if the user sent a suggestion
         {
             Suggestion::create([
                 'details' => $request->suggestions,
                 'request_id' => $userRequest->id
             ]);
+            //added for response
+            $userRequest->suggestions = $request->suggestions;
         }
+        //added for response
+        $userRequest->status = 'Open';
+
 
         return $this->sendResponse($userRequest,"Request Stored Successfully");
     }
@@ -89,23 +88,36 @@ class RequestController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($userRequest)
+    public function show($id)
     {
+        $userRequest = Request::find($id);
+
         if(is_null($userRequest))
         {
-            return $this->sendError(['Request' => 'No request with the specified id was found'] , 400);
+            return $this->sendError(['request' => 'no request with the specified id was found'] , 400);
         }
 
+        //All the info about a request that
+        //the api clients/users might need
+        $response = [
+            'type' => $userRequest->type,
+            'subject' => $userRequest->subject,
+            'details' => $userRequest->details,
+            'suggestion' => $userRequest->suggestion->details,
+        ];
 
-        return $this->sendResponse($userRequest,"Request added successfully");
+
+        return $this->sendResponse($response,"Request added successfully");
     }
 
 
-    public function rate(HttpRequest $request, $userRequest)
+    public function rate(HttpRequest $request, $id)
     {
         $input = $request->all();
+        $userRequest = Request::find($id);
         $validator = Validator::make( $input ,[
-            'rating' => 'required|min:1|max:5'
+            'note' => 'required',
+            'number' => 'required|min:1|max:5'
         ]);
 
         if ($validator->fails())
@@ -114,17 +126,21 @@ class RequestController extends Controller
         }
         if(is_null($userRequest))
         {
-            return $this->sendError(['Request' => 'No request with the specified id was found'] , 400);
+            return $this->sendError(['request' => 'no request with the specified id was found'] , 400);
         }
         if($userRequest->rating)
         {
-            return $this->sendError(['Rating' => 'You can only rate a request once'] , 400);
+            return $this->sendError(['rating' => 'you can only rate a request once'] , 400);
         }
 
+        $rating = Rating::create([
+            'number' => $request->number,
+            'note' => $request->note,
+            'request_id' => $userRequest->id
+        ]);
 
 
-
-        return $this->sendResponse($userRequest,"Request added successfully");
+        return $this->sendResponse($request,"Request has been rated successfully");
     }
 
 }

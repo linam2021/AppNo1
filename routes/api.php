@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Route;
 ///// User routes /////
 Route::group(['middleware' => 'auth:user-api', 'prefix' => 'user', 'as' => 'user.','namespace'=> 'Api\User'],
 function ($router) {
-    Route::resource('requests', 'RequestController')->only('store','index','show','rate');
+    Route::post('requests/{id}/rating', 'RequestController@rate')->name('requests.rate');
+    Route::resource('requests', 'RequestController')->only('store','index','show');
 });
 
 

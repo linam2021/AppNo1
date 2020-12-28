@@ -20,19 +20,19 @@ class Request extends Model
     ];
 
 
-    public function Statuses()
+    public function status()
     {
-        return $this->hasMany('App\Models\Statuses', 'request_id', 'id');
+        return $this->hasMany('App\Models\Status', 'request_id', 'id');
     }
 
-    public function Ratings()
+    public function rating()
     {
-        return $this->hasOne('App\Models\Ratings', 'request_id', 'id');
+        return $this->hasOne('App\Models\Rating', 'request_id', 'id');
     }
 
-    public function Suggestions()
+    public function suggestion()
     {
-        return $this->hasOne('App\Models\Suggestions', 'request_id', 'id');
+        return $this->hasOne('App\Models\Suggestion', 'request_id', 'id');
     }
 
 
