@@ -20,9 +20,9 @@ class Request extends Model
     ];
 
 
-    public function status()
+    public function statuses()
     {
-        return $this->hasMany('App\Models\Status', 'request_id', 'id');
+        return $this->hasMany('App\Models\Status', 'request_id', 'id')->latest();
     }
 
     public function rating()

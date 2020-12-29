@@ -26,6 +26,12 @@ class RequestController extends Controller
         $userId = Auth::id();
         $userRequests = Request::where('user_id',$userId)->get();
 
+        foreach($userRequests as $request)
+        {
+            $request->suggestion = $request->suggestion == null ? '' : $request->suggestion;
+            $request->status = Status::where('request_id',$request->id)->latest()->first();
+            $request->rating = $request->rating;
+        }
         return $this->sendResponse($userRequests, 'These requests were found');
     }
 
@@ -42,7 +48,7 @@ class RequestController extends Controller
             'type' => 'required|in:complaint,suggestion,thanks',
             'subject' => 'required',
             'details' => 'required',
-            //optional 'suggestions'
+            'suggestion' => 'filled' //must not be empty when it is present.
         ]);
 
         if ($validator->fails())
@@ -62,21 +68,21 @@ class RequestController extends Controller
         ]);
 
         //default status
-        Status::create([
+        $status = Status::create([
             'name' => 'Open',
             'request_id' => $userRequest->id
         ]);
-        if($request->suggestions) //if the user sent a suggestion
+        if($request->suggestion) //if the user sent a suggestion
         {
-            Suggestion::create([
-                'details' => $request->suggestions,
+            $suggestion = Suggestion::create([
+                'details' => $request->suggestion,
                 'request_id' => $userRequest->id
             ]);
             //added for response only
-            $userRequest->suggestions = $request->suggestions;
         }
         //added for response only
-        $userRequest->status = 'Open';
+        $userRequest->suggestion = $suggestion;
+        $userRequest->status = $status;
 
 
         return $this->sendResponse($userRequest,"Request Stored Successfully");
@@ -90,31 +96,33 @@ class RequestController extends Controller
      */
     public function show($id)
     {
-        $userRequest = Request::find($id);
+        $userId = Auth::id();
+        $userRequest = Request::where('user_id',$userId)->where('id',$id)->first();
 
         if(is_null($userRequest))
         {
             return $this->sendError(['request' => 'no request with the specified id was found'] , 400);
         }
 
-        //All the info about a request that
-        //the api clients/users might need
-        $response = [
-            'type' => $userRequest->type,
-            'subject' => $userRequest->subject,
-            'details' => $userRequest->details,
-            'suggestion' => $userRequest->suggestion->details,
-        ];
+        $userRequest->suggestion = $userRequest->suggestion;
+        $userRequest->status = Status::where('request_id',$userRequest->id)->latest()->first();
+        $userRequest->rating = $userRequest->rating;
 
-
-        return $this->sendResponse($response,"Request added successfully");
+        return $this->sendResponse($userRequest,"Request retrieved successfully");
     }
 
 
     public function rate(HttpRequest $request, $id)
     {
         $input = $request->all();
-        $userRequest = Request::find($id);
+
+        $userId = Auth::id();
+        $userRequest = Request::where('user_id',$userId)->where('id',$id)->first();
+        if(is_null($userRequest))
+        {
+            return $this->sendError(['request' => 'no request with the specified id was found, or you are not authorized to access it'] , 400);
+        }
+
         $validator = Validator::make( $input ,[
             'note' => 'required',
             'number' => 'required|min:1|max:5'
@@ -133,14 +141,14 @@ class RequestController extends Controller
             return $this->sendError(['rating' => 'you can only rate a request once'] , 400);
         }
 
-        $rating = Rating::create([
+        Rating::create([
             'number' => $request->number,
             'note' => $request->note,
             'request_id' => $userRequest->id
         ]);
 
 
-        return $this->sendResponse($request,"Request has been rated successfully");
+        return $this->sendResponse($userRequest,"Request has been rated successfully");
     }
 
 }

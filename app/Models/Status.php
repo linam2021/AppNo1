@@ -13,4 +13,9 @@ class Status extends Model
         'name',
         'request_id'
     ];
+
+    public function request()
+    {
+        return $this->belongsTo('App\Models\Request', 'request_id', 'id');
+    }
 }
