@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('user/register', 'Api\user\AuthController@register');
 Route::post('user/login', 'Api\user\AuthController@login');
+Route::post('user/resetPasswordResetLink','Api\user\PasswordResetRequestController@sendEmail');
+Route::post('user/resetPassword','Api\user\ChangePasswordController@passwordResetProcess');
 
 Route::group(['middleware' => 'auth:user-api', 'prefix' => 'user', 'as' => 'user.','namespace'=> 'Api\User'],
 function ($router) {
