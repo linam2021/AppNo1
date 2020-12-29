@@ -9,10 +9,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Rating;
 use App\Models\Status;
 use App\Models\Suggestion;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request as HttpRequest;
-
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 class RequestController extends Controller
 {
     use Messenger;
@@ -31,6 +32,7 @@ class RequestController extends Controller
             $request->suggestion = $request->suggestion == null ? '' : $request->suggestion;
             $request->status = Status::where('request_id',$request->id)->latest()->first();
             $request->rating = $request->rating;
+            $request->section = Section::find($request->section_id);
         }
         return $this->sendResponse($userRequests, 'These requests were found');
     }
@@ -48,14 +50,24 @@ class RequestController extends Controller
             'type' => 'required|in:complaint,suggestion,thanks',
             'subject' => 'required',
             'details' => 'required',
-            'suggestion' => 'filled' //must not be empty when it is present.
+            'suggestion' => 'filled', //must not be empty when it is present.
+            'section_id' => 'filled'
         ]);
 
         if ($validator->fails())
         {
             return $this->sendError($validator->errors(), "Make sure all paramaters are correct",400);
         }
-        $sectionId = Section::find(1)->id; //default section
+        // only added a "default section" with id of 1
+        //Still need to add all the possible sections
+
+        $section = Section::find($request->section_id);
+        if(!$section)
+        {
+            return $this->sendError(['section' => 'no section with the specified id was found'] , 400);
+        }
+
+
         $userId = Auth::id();
 
         //stored in database
@@ -63,7 +75,7 @@ class RequestController extends Controller
             'type' => $request->type,
             'subject' => $request->subject,
             'details' => $request->details,
-            'section_id' => $sectionId,
+            'section_id' => $section->id,
             'user_id' => $userId
         ]);
 
@@ -78,11 +90,11 @@ class RequestController extends Controller
                 'details' => $request->suggestion,
                 'request_id' => $userRequest->id
             ]);
-            //added for response only
         }
         //added for response only
         $userRequest->suggestion = $suggestion;
         $userRequest->status = $status;
+        $userRequest->section = $section;
 
 
         return $this->sendResponse($userRequest,"Request Stored Successfully");
@@ -107,6 +119,7 @@ class RequestController extends Controller
         $userRequest->suggestion = $userRequest->suggestion;
         $userRequest->status = Status::where('request_id',$userRequest->id)->latest()->first();
         $userRequest->rating = $userRequest->rating;
+        $userRequest->section = Section::find($userRequest->section_id);
 
         return $this->sendResponse($userRequest,"Request retrieved successfully");
     }
@@ -115,7 +128,6 @@ class RequestController extends Controller
     public function rate(HttpRequest $request, $id)
     {
         $input = $request->all();
-
         $userId = Auth::id();
         $userRequest = Request::where('user_id',$userId)->where('id',$id)->first();
         if(is_null($userRequest))
@@ -136,17 +148,22 @@ class RequestController extends Controller
         {
             return $this->sendError(['request' => 'no request with the specified id was found'] , 400);
         }
-        if($userRequest->rating)
+         //$userRequest->rating is not workng correctly for some reason
+        if(Rating::where('request_id',$userRequest->id)->first())
         {
             return $this->sendError(['rating' => 'you can only rate a request once'] , 400);
         }
 
-        Rating::create([
+        $rating = Rating::create([
             'number' => $request->number,
             'note' => $request->note,
             'request_id' => $userRequest->id
         ]);
 
+        $userRequest->suggestion = $userRequest->suggestion;
+        $userRequest->status = Status::where('request_id',$userRequest->id)->latest()->first();
+        $userRequest->section = Section::find($userRequest->section_id);
+        $userRequest->rating = $rating;
 
         return $this->sendResponse($userRequest,"Request has been rated successfully");
     }
