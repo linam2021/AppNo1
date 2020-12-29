@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 
-class Reguest extends Model
+class Request extends Model
 {
     use HasFactory;
 
@@ -20,19 +20,19 @@ class Reguest extends Model
     ];
 
 
-    public function Statuses()
+    public function statuses()
     {
-        return $this->hasMany('App\Models\Statuses', 'request_id', 'id');
+        return $this->hasMany('App\Models\Status', 'request_id', 'id')->latest();
     }
 
-    public function Ratings()
+    public function rating()
     {
-        return $this->hasOne('App\Models\Ratings', 'request_id', 'id');
+        return $this->hasOne('App\Models\Rating', 'request_id', 'id');
     }
 
-    public function Suggestions()
+    public function suggestion()
     {
-        return $this->hasOne('App\Models\Suggestions', 'request_id', 'id');
+        return $this->hasOne('App\Models\Suggestion', 'request_id', 'id');
     }
 
 

@@ -15,24 +15,29 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-//Lina, I changed the name of the "api" guard to "user-api"
-Route::middleware('auth:user-api')->get('/user', function (Request $request) {
-    return $request->user();
+
+///// User routes /////
+
+Route::post('user/register', 'Api\user\AuthController@register');
+Route::post('user/login', 'Api\user\AuthController@login');
+
+Route::group(['middleware' => 'auth:user-api', 'prefix' => 'user', 'as' => 'user.','namespace'=> 'Api\User'],
+function ($router) {
+    Route::post('requests/{id}/rating', 'RequestController@rate')->name('requests.rate');
+    Route::resource('requests', 'RequestController')->only('store','index','show');
 });
 
 
-///// admin routes /////
+///// Employee routes /////
 Route::post('employee/login', 'Api\Employee\AuthController@login');
 
-Route::group(['middleware' => 'auth:employee-api', 'prefix' => 'admin', 'namespace'=> 'Api\Employee'],
+Route::group(['middleware' => 'auth:employee-api', 'prefix' => 'employee', 'namespace'=> 'Api\Employee'],
 function ($router) {
 // to do later
 
 });
 
 
-Route::post('user/register', 'Api\user\AuthController@register');
-Route::post('user/login', 'Api\user\AuthController@login');
 
 
 

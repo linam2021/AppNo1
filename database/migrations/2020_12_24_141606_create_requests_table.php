@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateReguestsTable extends Migration
+class CreateRequestsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateReguestsTable extends Migration
      */
     public function up()
     {
-        Schema::create('reguests', function (Blueprint $table) {
+        Schema::create('requests', function (Blueprint $table) {
             $table->id();
             $table->enum('type',['complaint','suggestion','thanks'])->nullable();
             $table->string('subject')->nullable();
@@ -32,6 +32,6 @@ class CreateReguestsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reguests');
+        Schema::dropIfExists('requests');
     }
 }

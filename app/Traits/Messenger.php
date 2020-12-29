@@ -21,7 +21,7 @@ trait Messenger
     //$errorData is the error data returned by the validator
     //message is the message choosen by the programmer
     //after handling the request
-    public function sendError($errorData = [], $message, $code = 404)
+    public function sendError($errorData = [], $message ='Unsuccessful', $code = 404)
     {
         $response = [
             'success' => false,
@@ -29,7 +29,7 @@ trait Messenger
         ];
 
         if (!empty($errorData)) {
-            $response['data'] = $errorData;
+            $response['errors'] = $errorData;
         }
 
         return response()->json($response, $code);

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Statuses extends Model
+class Status extends Model
 {
     use HasFactory;
 
@@ -13,4 +13,9 @@ class Statuses extends Model
         'name',
         'request_id'
     ];
+
+    public function request()
+    {
+        return $this->belongsTo('App\Models\Request', 'request_id', 'id');
+    }
 }
