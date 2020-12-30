@@ -1,17 +1,13 @@
 @component('mail::message')
-# Introduction
 
-The body of your message.
+Dear user <br/>
+please copy this code and paste it in the resert password field
 
-@component('mail::button', ['url' => 'http://localhost:4200/response-password-reset?token='.$token])
-Button Text
-@endcomponent
-<br>
-<?php
-echo "yourtoken is ".$token;
-?>
-<br>
 
-Thanks,<br>
-{{ config('app.name') }}
+<br/>
+
+{{$token}}
+<br/>
+
+Thanks<br/>
 @endcomponent

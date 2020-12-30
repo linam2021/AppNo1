@@ -23,6 +23,8 @@ Route::post('user/login', 'Api\user\AuthController@login');
 Route::post('user/resetPasswordResetLink','Api\user\PasswordResetRequestController@sendEmail');
 Route::post('user/resetPassword','Api\user\ChangePasswordController@passwordResetProcess');
 
+Route::post('user/SendSolvedRequest','Api\user\SendSolvedRequestEmail@sendEmail');
+
 Route::group(['middleware' => 'auth:user-api', 'prefix' => 'user', 'as' => 'user.','namespace'=> 'Api\User'],
 function ($router) {
     Route::post('requests/{id}/rating', 'RequestController@rate')->name('requests.rate');

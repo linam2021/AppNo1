@@ -11,18 +11,16 @@ class SendMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $title;
-    public $customer_details;
+
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($title, $customer_details)
+    public function __construct()
     {
-        $this->title = $title;
-		$this->customer_details= $customer_details;
+
     }
 
     /**
@@ -31,7 +29,7 @@ class SendMail extends Mailable
      * @return $this
      */
     public function build()
-    {  // customer_mail is the name of template
-        return $this->subject($this->title) ->view('customer_mail');
+    {
+        return $this->markdown('SolvedEmail');
     }
 }
