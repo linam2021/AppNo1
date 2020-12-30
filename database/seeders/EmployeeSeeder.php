@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Section;
+use Carbon\Carbon;
 
 class EmployeeSeeder extends Seeder
 {
@@ -29,6 +30,8 @@ class EmployeeSeeder extends Seeder
             'region' => 'العاصمة',
             'city' => 'الجامعة',
             'town' => 'شفا بدران',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
         ]);
     }
 }
