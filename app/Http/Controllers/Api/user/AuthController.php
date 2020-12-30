@@ -62,4 +62,51 @@ class AuthController extends Controller
         ];
         return response()->json($response,200);
     }
+
+    public function user()
+    {
+        $user = Auth::user();
+
+        return $this->sendResponse($user,"This is current user's information");
+    }
+
+    public function update(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'username'=> 'filled',
+            'email' => 'filled|email',
+            'old_password' => 'filled',
+            'new_password'=>'required_with:old_password',
+            'f_name' => 'required',
+            's_name' => 'required',
+            't_name' => 'required',
+            'l_name' => 'required',
+            'region' => 'required',
+            'city' => 'required',
+            'town' => 'required',
+            'phone' => 'required',
+            'gender' => 'required|in:male,female',
+            'national_no' => 'required'
+        ]);
+
+        if($validator->fails())
+        {
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",400);
+        }
+
+        $user = Auth::user();
+        if($request->old_password)
+        {
+            if(!Hash::check($request->old_password, $user->password))
+            {
+                return $this->sendError(['old_password'=>"old_password doesn't match current password"] , 400);
+            }
+            $request->password = Hash::make($request->new_password);
+        }
+
+        User::where('id', Auth::id())
+            ->update($request->except(['old_password','new_password']));
+
+        return $this->sendResponse($user,"This is the current user's updated information");
+    }
 }
