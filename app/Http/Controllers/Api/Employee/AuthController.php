@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use App\Models\Employee;
 
 use App\Traits\Messenger;
@@ -53,14 +54,14 @@ class AuthController extends Controller
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'email' => 'filled|email',
+            'email' => ['filled','email',Rule::unique('users')->ignore(Auth::id())],
             'old_password' => 'filled',
             'new_password'=>'required_with:old_password',
-            'f_name' => 'required',
-            'l_name' => 'required',
-            'region' => 'required',
-            'city' => 'required',
-            'town' => 'required',
+            'f_name' => 'filled',
+            'l_name' => 'filled',
+            'region' => 'filled',
+            'city' => 'filled',
+            'town' => 'filled',
         ]);
 
         if($validator->fails())
@@ -73,13 +74,12 @@ class AuthController extends Controller
         {
             if(!Hash::check($request->old_password, $employee->password))
             {
-                return $this->sendError(['old_password'=>"old_password doesn't match current password"] , 400);
+                return $this->sendError(['old_password'=>"old_password field should match your current password"] , 400);
             }
-            $request->password = Hash::make($request->new_password);
+            $employee->password = Hash::make($request->new_password);
         }
 
-        Employee::where('id', Auth::id())
-            ->update($request->except(['old_password','new_password']));
+        $employee->update($request->except(['old_password','new_password']));
 
         return $this->sendResponse($employee,"This is the current employee's updated information");
     }

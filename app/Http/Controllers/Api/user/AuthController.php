@@ -72,9 +72,10 @@ class AuthController extends Controller
 
     public function update(Request $request)
     {
+        $user = Auth::user();
         $validator = Validator::make($request->all(),[
             'username'=> 'filled',
-            'email' => 'filled|email',
+            'email' => ['filled','email',Rule::unique('users')->ignore(Auth::id())],
             'old_password' => 'filled',
             'new_password'=>'required_with:old_password',
             'f_name' => 'required',
@@ -94,18 +95,16 @@ class AuthController extends Controller
             return $this->sendError($validator->errors(), "Make sure all paramaters are correct",400);
         }
 
-        $user = Auth::user();
         if($request->old_password)
         {
             if(!Hash::check($request->old_password, $user->password))
             {
-                return $this->sendError(['old_password'=>"old_password doesn't match current password"] , 400);
+                return $this->sendError(['old_password'=>"old_password field should match your current password"] , 400);
             }
-            $request->password = Hash::make($request->new_password);
+            $user->password = Hash::make($request->new_password);
         }
 
-        User::where('id', Auth::id())
-            ->update($request->except(['old_password','new_password']));
+        $user->update($request->except(['old_password','new_password']));
 
         return $this->sendResponse($user,"This is the current user's updated information");
     }
