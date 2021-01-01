@@ -71,6 +71,8 @@ class RequestController extends Controller
     public function update($id)
     {
         $request=Request::find($id);
+        if (is_null($request))
+           return $this->sendError('This request is not found');
         $emp_id=$request->employee_id;
         if (($request->employee_id != Auth::id()) && (!(is_null($emp_id)))) {
             return $this->sendError('You do not have rights to assign this request');
@@ -85,7 +87,7 @@ class RequestController extends Controller
             'request_id' => $id
         ]);
         $request->status = $status;
-        return $this->sendResponse($request, 'This request is assigned to this successfully!');
+        return $this->sendResponse($request, 'This request is assigned to this employee successfully!');
     }
 
     public function changeStatustoSolved(httpRequest $request)
