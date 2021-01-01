@@ -39,7 +39,7 @@ function ($router) {
 Route::post('employee/SendSolvedRequest','Api\employee\SendSolvedRequestEmail@sendEmail');
 Route::post('employee/login', 'Api\Employee\AuthController@login');
 Route::get('employee/filterByType', 'Api\Employee\RequestController@filter');
-Route::get('employee/changeStatustoSolved', 'Api\Employee\RequestController@changeStatustoSolved');
+Route::put('employee/changeStatustoSolved', 'Api\Employee\RequestController@changeStatustoSolved');
 
 
 
