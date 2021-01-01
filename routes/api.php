@@ -23,8 +23,6 @@ Route::post('user/login', 'Api\user\AuthController@login');
 Route::post('user/resetPasswordResetLink','Api\user\PasswordResetRequestController@sendEmail');
 Route::post('user/resetPassword','Api\user\ChangePasswordController@passwordResetProcess');
 
-Route::post('user/SendSolvedRequest','Api\user\SendSolvedRequestEmail@sendEmail');
-
 Route::group(['middleware' => 'auth:user-api', 'prefix' => 'user', 'as' => 'user.','namespace'=> 'Api\User'],
 function ($router) {
     Route::post('requests/{id}/rating', 'RequestController@rate')->name('requests.rate');
@@ -37,14 +35,15 @@ function ($router) {
 
 
 ///// Employee routes /////
+
+Route::post('employee/SendSolvedRequest','Api\employee\SendSolvedRequestEmail@sendEmail');
 Route::post('employee/login', 'Api\Employee\AuthController@login');
 
 Route::group(['middleware' => 'auth:employee-api', 'prefix' => 'employee', 'namespace'=> 'Api\Employee'],
 function ($router) {
     Route::get('me', 'AuthController@employee')->name('show');
     Route::put('me', 'AuthController@update')->name('update');
-// to complete later
-
+    Route::resource('requests', 'RequestController')->only('index','show','update');
 });
 
 
