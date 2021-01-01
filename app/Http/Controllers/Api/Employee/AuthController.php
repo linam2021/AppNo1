@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Api\Employee;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
+use Exception;
 use App\Models\Employee;
-
 use App\Traits\Messenger;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 
 class AuthController extends Controller
@@ -66,7 +67,7 @@ class AuthController extends Controller
 
         if($validator->fails())
         {
-            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",400);
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",code:400);
         }
 
         $employee = Auth::user();
@@ -74,7 +75,7 @@ class AuthController extends Controller
         {
             if(!Hash::check($request->old_password, $employee->password))
             {
-                return $this->sendError(['old_password'=>"old_password field should match your current password"] , 400);
+                return $this->sendError(['old_password'=>"old_password field should match your current password"] , code:400);
             }
             $employee->password = Hash::make($request->new_password);
         }
@@ -82,5 +83,19 @@ class AuthController extends Controller
         $employee->update($request->except(['old_password','new_password']));
 
         return $this->sendResponse($employee,"This is the current employee's updated information");
+    }
+
+    public function logout()
+    {
+        try{
+            Auth::logout();
+        }
+        catch(Exception $e)
+        {
+            return $this->sendError("[$e->getMessage()]" , code:400);
+        }
+
+        return $this->sendResponse([],"logged out successfully");
+
     }
 }

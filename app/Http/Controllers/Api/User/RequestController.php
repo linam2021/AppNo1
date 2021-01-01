@@ -9,11 +9,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Rating;
 use App\Models\Status;
 use App\Models\Suggestion;
-use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request as HttpRequest;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 class RequestController extends Controller
 {
     use Messenger;
@@ -56,7 +54,7 @@ class RequestController extends Controller
 
         if ($validator->fails())
         {
-            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",400);
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",code:400);
         }
         // only added a "default section" with id of 1
         //Still need to add all the possible sections
@@ -64,7 +62,7 @@ class RequestController extends Controller
         $section = Section::find($request->section_id);
         if(!$section)
         {
-            return $this->sendError(['section' => 'no section with the specified id was found'] , 400);
+            return $this->sendError(['section' => 'no section with the specified id was found'] , code:400);
         }
 
 
@@ -113,7 +111,7 @@ class RequestController extends Controller
 
         if(is_null($userRequest))
         {
-            return $this->sendError(['request' => 'no request with the specified id was found'] , 400);
+            return $this->sendError(['request' => 'no request with the specified id was found'], code:400);
         }
 
         $userRequest->suggestion = $userRequest->suggestion;
@@ -142,16 +140,16 @@ class RequestController extends Controller
 
         if ($validator->fails())
         {
-            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",400);
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",code:400);
         }
         if(is_null($userRequest))
         {
-            return $this->sendError(['request' => 'no request with the specified id was found'] , 400);
+            return $this->sendError(['request' => 'no request with the specified id was found'] , code:400);
         }
          //$userRequest->rating is not workng correctly for some reason
         if(Rating::where('request_id',$userRequest->id)->first())
         {
-            return $this->sendError(['rating' => 'you can only rate a request once'] , 400);
+            return $this->sendError(['rating' => 'you can only rate a request once'] , code:400);
         }
 
         $rating = Rating::create([

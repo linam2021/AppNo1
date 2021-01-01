@@ -10,6 +10,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use App\Traits\Messenger;
 use App\Models\User;
+use Exception;
 
 class AuthController extends Controller
 {
@@ -92,14 +93,14 @@ class AuthController extends Controller
 
         if($validator->fails())
         {
-            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",400);
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",code:400);
         }
 
         if($request->old_password)
         {
             if(!Hash::check($request->old_password, $user->password))
             {
-                return $this->sendError(['old_password'=>"old_password field should match your current password"] , 400);
+                return $this->sendError(['old_password'=>"old_password field should match your current password"] , code:400);
             }
             $user->password = Hash::make($request->new_password);
         }
@@ -107,5 +108,20 @@ class AuthController extends Controller
         $user->update($request->except(['old_password','new_password']));
 
         return $this->sendResponse($user,"This is the current user's updated information");
+    }
+
+    public function logout()
+    {
+        try{
+            Auth::logout();
+        }
+        catch(Exception $e)
+        {
+            return $this->sendError("[$e->getMessage()]" , code:400);
+        }
+
+
+        return $this->sendResponse([],"logged out successfully");
+
     }
 }
