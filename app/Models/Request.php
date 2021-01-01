@@ -16,7 +16,8 @@ class Request extends Model
         'subject',
         'details',
         'user_id',
-        'section_id'
+        'section_id',
+        'employee_id'
     ];
 
 
