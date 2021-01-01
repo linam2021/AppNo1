@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\User;
+namespace App\Http\Controllers\Api\Employee;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class SendSolvedRequestEmail extends Controller
 {
@@ -20,7 +21,7 @@ class SendSolvedRequestEmail extends Controller
             return $this->failedResponse();
         }
         $this->send($request->email);  //this is a function to send mail
-        return $this->successResponse();
+          return $this->successResponse();
     }
 
     public function send($email)  //this is a function to send mail
