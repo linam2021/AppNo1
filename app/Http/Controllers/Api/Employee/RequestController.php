@@ -72,7 +72,7 @@ class RequestController extends Controller
     {
         $request=Request::find($id);
         if (is_null($request))
-        return $this->sendError('This request is not found');
+           return $this->sendError('This request is not found');
         $emp_id=$request->employee_id;
         if (($request->employee_id != Auth::id()) && (!(is_null($emp_id)))) {
             return $this->sendError('You do not have rights to assign this request');
