@@ -61,6 +61,8 @@ class RequestController extends Controller
         //     return $this->sendError(['request' => 'no request with the specified id was found'] , 400);
         // }
         $employeeRequest = Request::where('id',$id)->first();
+        if (is_null($employeeRequest))
+            return $this->sendError('This request is not found');
         $employeeRequest->suggestion = $employeeRequest->suggestion;
         $employeeRequest->status = Status::where('request_id',$employeeRequest->id)->latest()->first();
         $employeeRequest->section = Section::find($employeeRequest->section_id);
