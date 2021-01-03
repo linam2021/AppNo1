@@ -19,9 +19,9 @@ class CreateEmployeesTable extends Migration
             $table->string('password');
             $table->string('f_name');
             $table->string('l_name');
-            $table->string('region');
+            $table->string('governorate');
+            $table->string('district');
             $table->string('city');
-            $table->string('town');
             $table->unsignedBigInteger('section_id');
             $table->timestamps();
 

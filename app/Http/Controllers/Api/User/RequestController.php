@@ -32,7 +32,7 @@ class RequestController extends Controller
             $request->suggestion = $request->suggestion == null ? '' : $request->suggestion;
             $request->status = Status::where('request_id',$request->id)->latest()->first();
             $request->rating = $request->rating;
-            $request->section = Section::find($request->section_id);
+            $request->section = Section::where('name',$request->section);
         }
         return $this->sendResponse($userRequests, 'These requests were found');
     }
@@ -50,24 +50,20 @@ class RequestController extends Controller
             'type' => 'required|in:complaint,suggestion,thanks',
             'subject' => 'required',
             'details' => 'required',
+            'section' => 'required',
             'suggestion' => 'filled', //must not be empty when it is present.
-            'section_id' => 'filled'
         ]);
 
         if ($validator->fails())
         {
-            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",400);
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",code:400);
         }
-        // only added a "default section" with id of 1
-        //Still need to add all the possible sections
 
-        $section = Section::find($request->section_id);
+        $section = Section::where('name',$request->section);
         if(!$section)
         {
-            return $this->sendError(['section' => 'no section with the specified id was found'] , 400);
+            return $this->sendError(['section' => 'no section with the specified name was found'] , code:400);
         }
-
-
         $userId = Auth::id();
 
         //stored in database
@@ -95,7 +91,6 @@ class RequestController extends Controller
         $userRequest->suggestion = $suggestion;
         $userRequest->status = $status;
         $userRequest->section = $section;
-
 
         return $this->sendResponse($userRequest,"Request Stored Successfully");
     }
