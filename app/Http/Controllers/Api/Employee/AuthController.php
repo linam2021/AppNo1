@@ -59,9 +59,9 @@ class AuthController extends Controller
             'new_password'=>'required_with:old_password',
             'f_name' => 'filled',
             'l_name' => 'filled',
-            'region' => 'filled',
+            'governorate' => 'filled',
+            'district' => 'filled',
             'city' => 'filled',
-            'town' => 'filled',
         ]);
 
         if($validator->fails())

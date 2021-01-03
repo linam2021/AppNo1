@@ -33,7 +33,6 @@ function ($router) {
 
 });
 
-
 ///// Employee routes /////
 
 Route::post('employee/SendSolvedRequest','Api\employee\SendSolvedRequestEmail@sendEmail');
@@ -41,6 +40,8 @@ Route::post('employee/login', 'Api\Employee\AuthController@login');
 
 Route::group(['middleware' => 'auth:employee-api', 'prefix' => 'employee', 'namespace'=> 'Api\Employee'],
 function ($router) {
+    Route::get('requests/filterByType', 'RequestController@filter');
+    Route::put('requests/{id}/changeStatustoSolved', 'RequestController@changeStatustoSolved');
     Route::get('me', 'AuthController@employee')->name('show');
     Route::put('me', 'AuthController@update')->name('update');
     Route::resource('requests', 'RequestController')->only('index','show','update');

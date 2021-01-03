@@ -17,21 +17,20 @@ class EmployeeSeeder extends Seeder
      */
     public function run()
     {
-        $section = Section::create([
-            'name' => 'default section'
-        ]);
-
-        DB::table('employees')->insert([
-            'f_name' => 'Mahmoud',
-            'l_name' => 'Tarik',
-            'email' => 'mt.alshahat@gmail.com',
-            'password' => Hash::make('RandomPassword123!'),
-            'section_id' => $section->id,
-            'region' => 'العاصمة',
-            'city' => 'الجامعة',
-            'town' => 'شفا بدران',
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
-        ]);
+        for ($i = 0 ; $i <= 15 ; $i++)
+        {
+            DB::table('employees')->insert([
+                'f_name' => 'admin',
+                'l_name' => 'admin',
+                'email' => 'admin'.$i.'@admin.com',
+                'password' => Hash::make('RandomPassword123!'),
+                'section_id' => 1, //جمعيات
+                'governorate' => 'العاصمة',
+                'district' => 'الجامعة',
+                'city' => 'شفا بدران',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]);
+        }
     }
 }
