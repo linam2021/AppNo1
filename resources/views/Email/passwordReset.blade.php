@@ -1,13 +1,14 @@
 @component('mail::message')
 
-Dear user <br/>
-please copy this code and paste it in the resert password field
+Dear user, <br>
+Please copy this code and paste it in the reset password field.
 
 
 <br/>
 
-{{$token}}
-<br/>
+<b>{{$token}}<b>
 
-Thanks<br/>
+<br>
+
+,Maak Team<br/>
 @endcomponent

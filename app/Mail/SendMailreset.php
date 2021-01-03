@@ -32,7 +32,9 @@ class SendMailreset extends Mailable
      */
     public function build()
     {
-        return $this->markdown('Email.passwordReset')->with([
+        return $this->markdown('Email.passwordReset')
+        ->subject('Verification token to reset your MaaK password')
+        ->with([
             'token' => $this->token,
             'email' => $this->email
         ]);
