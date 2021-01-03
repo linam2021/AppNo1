@@ -18,7 +18,6 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'username'=>'required',
             'email'=>'required|unique:users|email',
             'password'=>'required|string|min:8',
             'c_password'=>'required|same:password'
@@ -75,7 +74,6 @@ class AuthController extends Controller
     {
         $user = Auth::user();
         $validator = Validator::make($request->all(),[
-            'username'=> 'filled',
             'email' => ['filled','email',Rule::unique('users')->ignore(Auth::id())],
             'old_password' => 'filled',
             'new_password'=>'required_with:old_password',
@@ -83,9 +81,10 @@ class AuthController extends Controller
             's_name' => 'required',
             't_name' => 'required',
             'l_name' => 'required',
-            'region' => 'required',
+            'date_of_birth' =>'required',
+            'governorate' => 'required',
+            'district' => 'required',
             'city' => 'required',
-            'town' => 'required',
             'phone' => 'required',
             'gender' => 'required|in:male,female',
             'national_no' => 'required'

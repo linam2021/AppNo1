@@ -14,9 +14,9 @@ class Employee extends Authenticatable implements JWTSubject
         'password',
         'f_name',
         'l_name',
-        'region',
+        'governorate',
+        'district',
         'city',
-        'town',
         'section_id'
     ];
 

@@ -20,6 +20,7 @@ class CreateRequestsTable extends Migration
             $table->mediumText('details')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('section_id')->nullable();
+            $table->unsignedBigInteger('employee_id')->nullable();
 
             $table->timestamps();
         });
