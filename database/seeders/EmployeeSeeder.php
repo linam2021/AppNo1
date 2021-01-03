@@ -17,14 +17,15 @@ class EmployeeSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 0 ; $i <= 15 ; $i++)
+        //assigning one employee to section
+        for ($i = 1 ; $i <= 15 ; $i++)
         {
             DB::table('employees')->insert([
                 'f_name' => 'admin',
                 'l_name' => 'admin',
                 'email' => 'admin'.$i.'@admin.com',
                 'password' => Hash::make('RandomPassword123!'),
-                'section_id' => 1, //جمعيات
+                'section_id' => $i,
                 'governorate' => 'العاصمة',
                 'district' => 'الجامعة',
                 'city' => 'شفا بدران',

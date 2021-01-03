@@ -56,13 +56,13 @@ class RequestController extends Controller
 
         if ($validator->fails())
         {
-            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",400);
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",code:400);
         }
 
         $section = Section::where('name',$request->section);
         if(!$section)
         {
-            return $this->sendError(['section' => 'no section with the specified name was found'] , 400);
+            return $this->sendError(['section' => 'no section with the specified name was found'] , code:400);
         }
         $userId = Auth::id();
 

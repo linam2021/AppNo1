@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Traits\Messenger;
+use Illuminate\Support\Facades\Hash;
 
 class ChangePasswordController extends Controller
 {
@@ -29,10 +30,7 @@ class ChangePasswordController extends Controller
 
       // Token not found response
       private function tokenNotFoundError() {
-          return $this->sendError(['error' => 'Either your email or token is wrong.'], code:)
-          response()->json([
-            'error' => 'Either your email or token is wrong.'
-          ],Response::HTTP_UNPROCESSABLE_ENTITY);
+          return $this->sendError(['error' => 'Either your email or token is wrong.'], code:422);
       }
 
       // Reset password
@@ -41,7 +39,7 @@ class ChangePasswordController extends Controller
           $userData = User::whereEmail($request->email)->first();
           // update password
           $userData->update([
-            'password'=>bcrypt($request->password)
+            'password'=>Hash::make($request->password)
           ]);
           // remove verification data from db
           $this->updatePasswordRow($request)->delete();
