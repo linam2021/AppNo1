@@ -29,7 +29,7 @@ function ($router) {
     Route::get('me', 'AuthController@user')->name('show');
     Route::put('me', 'AuthController@update')->name('update');
     Route::post('logout', 'AuthController@logout')->name('logout');
-
+    Route::get('requests/statuses','RequestController@statuses');
     Route::resource('requests', 'RequestController')->only('store','index','show');
 
 });

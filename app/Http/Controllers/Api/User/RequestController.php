@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Models\Rating;
+use App\Models\Status;
 use App\Models\Request;
 use App\Models\Section;
 use App\Traits\Messenger;
-use App\Http\Controllers\Controller;
-use App\Models\Rating;
-use App\Models\Status;
 use App\Models\Suggestion;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request as HttpRequest;
+
 class RequestController extends Controller
 {
     use Messenger;
@@ -30,7 +32,7 @@ class RequestController extends Controller
             $request->suggestion = $request->suggestion == null ? '' : $request->suggestion;
             $request->status = Status::where('request_id',$request->id)->latest()->first();
             $request->rating = $request->rating;
-            $request->section = Section::where('name',$request->section);
+            $request->section = Section::find($request->section_id);
         }
         return $this->sendResponse($userRequests, 'These requests were found');
     }
@@ -159,6 +161,17 @@ class RequestController extends Controller
         $userRequest->rating = $rating;
 
         return $this->sendResponse($userRequest,"Request has been rated successfully");
+    }
+
+    public function statuses()
+    {
+        $statuses = DB::table('statuses')
+        ->join('requests','statuses.request_id', '=','requests.id')
+        ->select('statuses.id','statuses.created_at','statuses.name', 'statuses.request_id')
+        ->where('requests.user_id',Auth::id())
+        ->get();
+
+        return $this->sendResponse($statuses,"These statuses were found");
     }
 
 }

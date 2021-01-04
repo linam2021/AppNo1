@@ -27,8 +27,9 @@ class RequestController extends Controller
         $employeeRequests=DB::table('requests')
         ->join('users','requests.user_id', '=','users.id')
         ->join('sections','requests.section_id','=','sections.id')
-        ->select('requests.id','requests.created_at','users.f_name', 'users.s_name','users.t_name','users.l_name','users.email','requests.employee_id','requests.type','sections.name')
+        ->select('requests.id','requests.created_at','requests.subject','requests.details','requests.employee_id','requests.type','sections.name as section','users.f_name', 'users.s_name','users.t_name','users.l_name','users.email as user_email')
         ->get();
+
         if($employeeRequests->count()==0)
         {
              return $this->sendError('There is no request');
@@ -38,10 +39,16 @@ class RequestController extends Controller
 
     public function filter(httpRequest $request)
     {
-         $employeeRequests=DB::table('requests')
+        $validator = Validator::make( $request->all() ,[
+            'type' => 'required|in:complaint,suggestion,thanks',
+        ]);
+        if ($validator->fails())
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",code:400);
+
+        $employeeRequests=DB::table('requests')
         ->join('users','requests.user_id', '=','users.id')
         ->join('sections','requests.section_id','=','sections.id')
-        ->select('requests.id','requests.created_at','users.f_name', 'users.s_name','users.t_name','users.l_name','users.email','requests.employee_id','requests.type','sections.name')
+        ->select('requests.id','requests.created_at','requests.subject','requests.details','requests.employee_id','requests.type','sections.name as section','users.f_name', 'users.s_name','users.t_name','users.l_name','users.email as user_email')
         ->where('requests.type','=',$request->type)
         ->get();
         if($employeeRequests->count()==0)
@@ -106,6 +113,5 @@ class RequestController extends Controller
         ]);
         $req->status = $status;
         return $this->sendResponse($req, 'This request is solved successfully!');
-
     }
 }
