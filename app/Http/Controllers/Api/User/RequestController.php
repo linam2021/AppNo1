@@ -57,7 +57,7 @@ class RequestController extends Controller
             return $this->sendError($validator->errors(), "Make sure all paramaters are correct",code:400);
         }
 
-        $section = Section::where('name',$request->section);
+        $section = Section::where('name',$request->section)->first();
         if(!$section)
         {
             return $this->sendError(['section' => 'no section with the specified name was found'] , code:400);
