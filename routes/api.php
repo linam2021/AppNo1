@@ -18,10 +18,10 @@ use Illuminate\Support\Facades\Route;
 
 ///// User routes /////
 
-Route::post('user/register', 'Api\user\AuthController@register');
-Route::post('user/login', 'Api\user\AuthController@login');
-Route::post('user/reset-password','Api\user\PasswordResetRequestController@sendEmail');
-Route::post('user/confirm-reset','Api\user\ChangePasswordController@passwordResetProcess');
+Route::post('user/register', 'Api\User\AuthController@register');
+Route::post('user/login', 'Api\User\AuthController@login');
+Route::post('user/reset-password','Api\User\PasswordResetRequestController@sendEmail');
+Route::post('user/confirm-reset','Api\User\ChangePasswordController@passwordResetProcess');
 
 Route::group(['middleware' => 'auth:user-api', 'prefix' => 'user', 'as' => 'user.','namespace'=> 'Api\User'],
 function ($router) {
