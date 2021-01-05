@@ -67,7 +67,7 @@ class AuthController extends Controller
 
         if($validator->fails())
         {
-            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",code:400);
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct","Unsuccessful",400);
         }
 
         $employee = Auth::user();
@@ -75,7 +75,7 @@ class AuthController extends Controller
         {
             if(!Hash::check($request->old_password, $employee->password))
             {
-                return $this->sendError(['old_password'=>"old_password field should match your current password"] , code:400);
+                return $this->sendError(['old_password'=>"old_password field should match your current password"] ,"Unsuccessful",400);
             }
             $employee->password = Hash::make($request->new_password);
         }
@@ -92,7 +92,7 @@ class AuthController extends Controller
         }
         catch(Exception $e)
         {
-            return $this->sendError("[$e->getMessage()]" , code:400);
+            return $this->sendError("[$e->getMessage()]" , "Unsuccessful",400);
         }
 
         return $this->sendResponse([],"logged out successfully");

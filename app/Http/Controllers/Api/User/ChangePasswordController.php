@@ -30,7 +30,7 @@ class ChangePasswordController extends Controller
 
       // Token not found response
       private function tokenNotFoundError() {
-          return $this->sendError(['error' => 'Either your email or token is wrong.'], code:422);
+          return $this->sendError(['error' => 'Either your email or token is wrong.'], "Unsuccessful",422);
       }
 
       // Reset password

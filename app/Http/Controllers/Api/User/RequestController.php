@@ -56,13 +56,13 @@ class RequestController extends Controller
 
         if ($validator->fails())
         {
-            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",code:400);
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct","Unsuccessful",400);
         }
 
         $section = Section::where('name',$request->section)->first();
         if(!$section)
         {
-            return $this->sendError(['section' => 'no section with the specified name was found'] , code:400);
+            return $this->sendError(['section' => 'no section with the specified name was found'] , "Unsuccessful",400);
         }
         $userId = Auth::id();
 
@@ -108,7 +108,7 @@ class RequestController extends Controller
 
         if(is_null($userRequest))
         {
-            return $this->sendError(['request' => 'no request with the specified id was found'], code:400);
+            return $this->sendError(['request' => 'no request with the specified id was found'], "Unsuccessful",400);
         }
 
         $userRequest->suggestion = $userRequest->suggestion;
@@ -137,16 +137,16 @@ class RequestController extends Controller
 
         if ($validator->fails())
         {
-            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",code:400);
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct","Unsuccessful",400);
         }
         if(is_null($userRequest))
         {
-            return $this->sendError(['request' => 'no request with the specified id was found'] , code:400);
+            return $this->sendError(['request' => 'no request with the specified id was found'] , "Unsuccessful",400);
         }
          //$userRequest->rating is not workng correctly for some reason
         if(Rating::where('request_id',$userRequest->id)->first())
         {
-            return $this->sendError(['rating' => 'you can only rate a request once'] , code:400);
+            return $this->sendError(['rating' => 'you can only rate a request once'] , "Unsuccessful",400);
         }
 
         $rating = Rating::create([

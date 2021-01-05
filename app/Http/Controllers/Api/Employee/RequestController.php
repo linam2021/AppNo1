@@ -43,7 +43,7 @@ class RequestController extends Controller
             'type' => 'required|in:complaint,suggestion,thanks',
         ]);
         if ($validator->fails())
-            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",code:400);
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct","Unsuccessful",400);
 
         $employeeRequests=DB::table('requests')
         ->join('users','requests.user_id', '=','users.id')
