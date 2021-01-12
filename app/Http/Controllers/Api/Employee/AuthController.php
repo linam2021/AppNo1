@@ -23,7 +23,7 @@ class AuthController extends Controller
         $credentials = $request->all();
         $validator = Validator::make($credentials,[
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'string|required',
         ]);
 
         if($validator->fails())
@@ -56,18 +56,18 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'email' => ['filled','email',Rule::unique('users')->ignore(Auth::id())],
-            'old_password' => 'filled',
-            'new_password'=>'required_with:old_password',
-            'f_name' => 'filled',
-            'l_name' => 'filled',
-            'governorate' => 'filled',
-            'district' => 'filled',
-            'city' => 'filled',
+            'old_password' => 'filled|string',
+            'new_password'=>'string|required_with:old_password',
+            'f_name' => 'string|filled',
+            'l_name' => 'string|filled',
+            'governorate' => 'string|filled',
+            'district' => 'string|filled',
+            'city' => 'string|filled',
         ]);
 
         if($validator->fails())
         {
-            return $this->sendError($validator->errors(), "Make sure all paramaters are correct","Unsuccessful",400);
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",400);
         }
 
         $employee = Auth::user();
@@ -92,7 +92,7 @@ class AuthController extends Controller
         }
         catch(Exception $e)
         {
-            return $this->sendError("[$e->getMessage()]" , "Unsuccessful",400);
+            return $this->sendError(['error'=>$e->getMessage()] , "Unsuccessful",400);
         }
 
         return $this->sendResponse([],"logged out successfully");

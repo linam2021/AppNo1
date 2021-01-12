@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\user;
+namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -43,7 +43,7 @@ class AuthController extends Controller
         $credentials = $request->all();
         $validator = Validator::make($credentials,[
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|string',
         ]);
 
         if($validator->fails())
@@ -75,24 +75,24 @@ class AuthController extends Controller
         $user = Auth::user();
         $validator = Validator::make($request->all(),[
             'email' => ['filled','email',Rule::unique('users')->ignore(Auth::id())],
-            'old_password' => 'filled',
-            'new_password'=>'required_with:old_password',
-            'f_name' => 'required',
-            's_name' => 'required',
-            't_name' => 'required',
-            'l_name' => 'required',
-            'date_of_birth' =>'required',
-            'governorate' => 'required',
-            'district' => 'required',
-            'city' => 'required',
-            'phone' => 'required',
-            'gender' => 'required|in:male,female',
-            'national_no' => 'required'
+            'old_password' => 'filled|string',
+            'new_password'=>'required_with:old_password|string',
+            'f_name' => 'required|string',
+            's_name' => 'required|string',
+            't_name' => 'required|string',
+            'l_name' => 'required|string',
+            'date_of_birth' =>'required|date',
+            'governorate' => 'required|string',
+            'district' => 'required|string',
+            'city' => 'required|string',
+            'phone' => 'required|regex:/^[0-9]+$/',
+            'gender' => 'required|string|in:male,female',
+            'national_no' => 'required|regex:/^[0-9]+$/'
         ]);
 
         if($validator->fails())
         {
-            return $this->sendError($validator->errors(), "Make sure all paramaters are correct","Unsuccessful",400);
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",400);
         }
 
         if($request->old_password)
@@ -116,7 +116,7 @@ class AuthController extends Controller
         }
         catch(Exception $e)
         {
-            return $this->sendError("[$e->getMessage()]" , "Unsuccessful",400);
+            return $this->sendError(['error'=>$e->getMessage()] , "Unsuccessful",400);
         }
 
 

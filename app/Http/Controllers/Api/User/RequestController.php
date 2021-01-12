@@ -47,11 +47,11 @@ class RequestController extends Controller
     {
         $input = $request->all();
         $validator = Validator::make( $input ,[
-            'type' => 'required|in:complaint,suggestion,thanks',
-            'subject' => 'required',
-            'details' => 'required',
-            'section' => 'required',
-            'suggestion' => 'filled', //must not be empty when it is present.
+            'type' => 'required|string|in:complaint,suggestion,thanks',
+            'subject' => 'required|string',
+            'details' => 'required|string',
+            'section' => 'required|string',
+            'suggestion' => 'filled|string', //must not be empty when it is present.
         ]);
 
         if ($validator->fails())
@@ -127,12 +127,12 @@ class RequestController extends Controller
         $userRequest = Request::where('user_id',$userId)->where('id',$id)->first();
         if(is_null($userRequest))
         {
-            return $this->sendError(['request' => 'no request with the specified id was found, or you are not authorized to access it'] , 400);
+            return $this->sendError(['request' => 'no request with the specified id was found, or you are not authorized to access it'], "Unsuccessful", 400);
         }
 
         $validator = Validator::make( $input ,[
-            'note' => 'required',
-            'number' => 'required|min:1|max:5'
+            'note' => 'required|string',
+            'number' => 'integer|required|min:1|max:5'
         ]);
 
         if ($validator->fails())

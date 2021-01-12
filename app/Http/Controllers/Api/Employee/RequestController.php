@@ -40,10 +40,10 @@ class RequestController extends Controller
     public function filter(httpRequest $request)
     {
         $validator = Validator::make( $request->all() ,[
-            'type' => 'required|in:complaint,suggestion,thanks',
+            'type' => 'string|required|in:complaint,suggestion,thanks',
         ]);
         if ($validator->fails())
-            return $this->sendError($validator->errors(), "Make sure all paramaters are correct","Unsuccessful",400);
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",400);
 
         $employeeRequests=DB::table('requests')
         ->join('users','requests.user_id', '=','users.id')
