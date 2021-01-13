@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers\Api\Employee;
 
+use App\Models\User;
+use App\Models\Status;
 use App\Models\Request;
 use App\Models\Section;
-use App\Traits\Messenger;
-use App\Http\Controllers\Controller;
-use App\Models\Status;
 use App\Models\Employee;
-use App\Models\User;
+use App\Traits\Messenger;
+use App\Models\Suggestion;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request as HttpRequest;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
-use PhpParser\NodeVisitor\FirstFindingVisitor;
 
 class RequestController extends Controller
 {
@@ -40,12 +39,12 @@ class RequestController extends Controller
         ->get();
         if($employeeRequests->count()==0)
         {
-             return $this->sendResponse($employeeRequests,'There is no request');
+             return $this->sendResponse($employeeRequests,'There were no requests found for this employee');
         }
         foreach($employeeRequests as $request)
         {
             $request->status = Status::where('request_id',$request->id)->latest()->first();
-            $request->section = Section::find($employee->section_id);
+            $request->section = Section::find($employee->section_id)->name;
         }
         return $this->sendResponse($employeeRequests, 'These requests were found');
     }
@@ -73,12 +72,12 @@ class RequestController extends Controller
         ->get();
         if($employeeRequests->count()==0)
         {
-            return $this->sendResponse($employeeRequests,'There is no request');
+            return $this->sendResponse($employeeRequests,'There were no requests found for this employee');
         }
         foreach($employeeRequests as $request)
         {
             $request->status = Status::where('request_id',$request->id)->latest()->first();
-            $request->section = Section::find($employee->section_id);
+            $request->section = Section::find($employee->section_id)->name;
         }
         return $this->sendResponse($employeeRequests, 'These requests were found');
     }
@@ -94,23 +93,18 @@ class RequestController extends Controller
         ->select('requests.id','requests.type','requests.subject','requests.details','requests.employee_id','requests.created_at')
         ->where ('requests.section_id','=', $employee->section_id)
         ->where ('requests.id',$id)
-        ->whereNotIn('requests.id', function ($query) {
-            $query->select('statuses.request_id')
-                  ->from('statuses')
-                  ->where('statuses.name','=','Solved');})
-        ->get();
-        if($employeeRequest->count()==0)
+        ->first();
+        if(! $employeeRequest)
         {
-            return $this->sendResponse($employeeRequest,'There is no request');
+            return $this->sendError(['not found' => 'request wasnt found'],'no such request was found');
         }
         $req=Request::where('id',$id)->first();
-        foreach($employeeRequest as $request)
-        {
-            $request->user=User::where('id',$req->user_id)->first();
-            $request->status = Status::where('request_id',$id)->latest()->first();
-            $request->section = Section::find($employee->section_id);
-        }
-        return $this->sendResponse($employeeRequest, 'These requests were found');
+        $employeeRequest->suggestion = Suggestion::where('request_id', $employeeRequest->id)->first();
+        $employeeRequest->user=User::where('id',$req->user_id)->first();
+        $employeeRequest->status = Status::where('request_id',$id)->latest()->first();
+        $employeeRequest->section = Section::find($employee->section_id);
+
+        return $this->sendResponse($employeeRequest, 'This request was found');
     }
 
     public function update($id)
