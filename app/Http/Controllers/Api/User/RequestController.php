@@ -51,12 +51,12 @@ class RequestController extends Controller
             'subject' => 'required|string',
             'details' => 'required|string',
             'section' => 'required|string',
-            'suggestion' => 'filled|string', //must not be empty when it is present.
+            'suggestion' => 'filled|string', //must not be empty when it is present and is only validated if type is suggestion
         ]);
 
         if ($validator->fails())
         {
-            return $this->sendError($validator->errors(), "Make sure all paramaters are correct","Unsuccessful",400);
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",400);
         }
 
         $section = Section::where('name',$request->section)->first();
@@ -80,6 +80,7 @@ class RequestController extends Controller
             'name' => 'Open',
             'request_id' => $userRequest->id
         ]);
+        $suggestion = null;
         if($request->suggestion) //if the user sent a suggestion
         {
             $suggestion = Suggestion::create([
@@ -137,7 +138,7 @@ class RequestController extends Controller
 
         if ($validator->fails())
         {
-            return $this->sendError($validator->errors(), "Make sure all paramaters are correct","Unsuccessful",400);
+            return $this->sendError($validator->errors(), "Make sure all paramaters are correct",400);
         }
         if(is_null($userRequest))
         {
