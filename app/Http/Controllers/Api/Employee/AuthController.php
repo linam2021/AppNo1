@@ -75,7 +75,7 @@ class AuthController extends Controller
         {
             if(!Hash::check($request->old_password, $employee->password))
             {
-                return $this->sendError(['old_password'=>"old_password field should match your current password"] ,"Unsuccessful",400);
+                return $this->sendError(['old_password'=>'old_password field should match your current password'] ,"Unsuccessful",400);
             }
             $employee->password = Hash::make($request->new_password);
         }

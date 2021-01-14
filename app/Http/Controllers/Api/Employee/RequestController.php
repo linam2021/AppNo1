@@ -96,7 +96,7 @@ class RequestController extends Controller
         ->first();
         if(! $employeeRequest)
         {
-            return $this->sendError(['not found' => 'request wasnt found'],'no such request was found');
+            return $this->sendError(['not found' => 'request wasnt found'],'no such request was found',400);
         }
         $req=Request::where('id',$id)->first();
         $employeeRequest->suggestion = Suggestion::where('request_id', $employeeRequest->id)->first();
